@@ -155,7 +155,11 @@ class DmLabCompatibilityV0(gym.Env[ObsType, Dict[str, np.ndarray]], EzPickle):
         action_array = np.array([a[0] for a in action.values()], dtype=np.intc)
         reward = self._env.step(action_array)
 
-        obs = self._env.observations()
+        if not self._env.is_running():
+            obs = self.observation_space.sample()
+        else:
+            obs = self._env.observations()
+
         terminated = not self._env.is_running()
         truncated = False
         info = {}
